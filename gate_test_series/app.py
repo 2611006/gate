@@ -39,23 +39,26 @@ def levels(stream, subject):
 @app.route('/quiz/<stream>/<subject>/<difficulty>')
 def quiz(stream, subject, difficulty):
     module = SUBJECT_MODULES.get(subject)
-    
-    if not module:
-        return "Subject not found", 404
+
+    if module is None:
+        return f"Invalid subject slug: {subject}", 404
+
+    if not hasattr(module, "questions"):
+        return f"Questions not defined for {subject}", 500
 
     if difficulty not in module.questions:
-        return "Difficulty not found", 404
+        return f"Invalid difficulty: {difficulty}", 404
 
     return render_template(
-    "questions.html",
-    stream=stream,
-    subject_slug=subject,                    # engineering_math
-    subject_name=SUBJECT_NAMES[subject],     # Engineering Mathematics
-    level=difficulty.capitalize(),
-    difficulty=difficulty,
-    questions=questions,
-    results=None
-)
+        "questions.html",
+        stream=stream,
+        subject_slug=subject,
+        subject_name=SUBJECT_NAMES.get(subject, subject),
+        level=difficulty.capitalize(),
+        difficulty=difficulty,
+        questions=module.questions[difficulty],
+        results=None
+    )
 
 # Dictionary mapping for cleaner lookup
 SUBJECT_MODULES = {
@@ -132,6 +135,7 @@ def index():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
