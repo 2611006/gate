@@ -2,16 +2,12 @@
 <html>
 <head>
   <title>{{ subject_name }} - {{ level }}</title>
-  <h2>{{ subject_name }} Prep 
-  <small style="color: #718096;">({{ level }})</small>
-</h2>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
     body { background-color: #f8f9fa; font-family: sans-serif; padding: 20px; }
     .container { max-width: 800px; margin: auto; }
-    
-    /* The Card Structure */
+
     .card {
       background: white;
       border-radius: 12px;
@@ -23,12 +19,8 @@
 
     .options-list { list-style: none; padding: 0; margin-top: 15px; }
 
-    /* Hide the actual radio circle */
-    .radio-input {
-      display: none;
-    }
+    .radio-input { display: none; }
 
-    /* Style for the Label (The "Button") */
     .option-label {
       display: block;
       padding: 15px;
@@ -47,20 +39,10 @@
       border-color: #cbd5e0;
     }
 
-    /* WHAT HAPPENS WHEN CHOSEN */
     .radio-input:checked + .option-label {
-      background-color: #ebf8ff; /* Light Blue background */
-      border-color: #3182ce;     /* Bright Blue border */
-      color: #2c5282;            /* Dark Blue text */
-      box-shadow: 0 0 0 1px #3182ce;
-    }
-
-    /* Add a little checkmark indicator when selected */
-    .radio-input:checked + .option-label::after {
-      content: '✓';
-      position: absolute;
-      right: 15px;
-      font-weight: bold;
+      background-color: #ebf8ff;
+      border-color: #3182ce;
+      color: #2c5282;
     }
 
     .submit-btn {
@@ -75,26 +57,30 @@
       display: block;
       width: 100%;
     }
-    
+
     .submit-btn:hover { background-color: #2b6cb0; }
   </style>
 </head>
+
 <body>
 
 <div class="container">
-  <h2>{{ subject }} Prep <small style="color: #718096;">({{ level|capitalize }})</small></h2>
+
+  <h2>
+    {{ subject_name }} Prep
+    <small style="color:#718096;">({{ level }})</small>
+  </h2>
 
   <form method="POST" action="{{ url_for('submit_answers') }}">
-  <input type="hidden" name="difficulty" value="{{ difficulty }}">
-<input type="hidden" name="subject" value="{{ subject_slug }}">
+    <input type="hidden" name="difficulty" value="{{ difficulty }}">
+    <input type="hidden" name="subject" value="{{ subject_slug }}">
 
+    {% for q in questions %}
+      {% set q_idx = loop.index %}
 
-  {% for q in questions %}
-    {% set q_idx = loop.index %}
-    <div class="card">
-      <p style="font-size: 1.1rem;"><b>{{ q_idx }}. {{ q.q }}</b></p>
-      
-      <div class="options-list">
+      <div class="card">
+        <p><b>{{ q_idx }}. {{ q.q }}</b></p>
+
         {% for opt in q.options %}
           {% if results %}
             {% set user_choice = results[q_idx-1].user_choice %}
@@ -104,54 +90,51 @@
             {% set correct_choice = None %}
           {% endif %}
 
-          <div class="option-wrapper">
-            <input type="radio" 
-                   name="q{{ q_idx }}" 
-                   id="q{{ q_idx }}_{{ loop.index0 }}" 
-                   value="{{ opt }}" 
-                   class="radio-input"
-                   {% if user_choice == opt %}checked{% endif %}
-                   {% if results %}disabled{% endif %}>
-            
-            <label for="q{{ q_idx }}_{{ loop.index0 }}" 
-       class="option-label"
-       style="
-       {% if results %}
-         {# 1. Always highlight the correct answer in green #}
-         {% if opt == correct_choice %}
-           background-color: #d4edda; border-color: #28a745; color:#155724;
-         
-         {# 2. If the user picked this option and it was wrong, highlight in red #}
-         {% elif user_choice == opt and opt != correct_choice %}
-           background-color: #f8d7da; border-color: #dc3545; color:#721c24;
-         {% endif %}
-       {% endif %}">
-  {{ opt }}
-  
-  {# Optional: Add text labels for clarity after submission #}
-  {% if results %}
-    {% if opt == correct_choice %}
-      <span style="float: right; font-size: 0.8rem;">✔ Correct Answer</span>
-    {% elif user_choice == opt and opt != correct_choice %}
-      <span style="float: right; font-size: 0.8rem;">✖ Your Choice</span>
-    {% endif %}
-  {% endif %}
-</label>
-          </div>
+          <input type="radio"
+                 name="q{{ q_idx }}"
+                 id="q{{ q_idx }}_{{ loop.index }}"
+                 value="{{ opt }}"
+                 class="radio-input"
+                 {% if user_choice == opt %}checked{% endif %}
+                 {% if results %}disabled{% endif %}>
+
+          <label for="q{{ q_idx }}_{{ loop.index }}"
+                 class="option-label"
+                 style="
+                 {% if results and user_choice %}
+                   {% if opt == correct_choice %}
+                     background-color:#d4edda; border-color:#28a745; color:#155724;
+                   {% elif opt == user_choice %}
+                     background-color:#f8d7da; border-color:#dc3545; color:#721c24;
+                   {% endif %}
+                 {% endif %}
+                 ">
+
+            {{ opt }}
+
+            {% if results and user_choice %}
+              {% if opt == correct_choice %}
+                <span style="float:right;font-size:0.8rem;">✔ Correct</span>
+              {% elif opt == user_choice %}
+                <span style="float:right;font-size:0.8rem;">✖ Your Choice</span>
+              {% endif %}
+            {% endif %}
+          </label>
+
         {% endfor %}
       </div>
-    </div>
-  {% endfor %}
+    {% endfor %}
 
-  {% if results %}
-    <h3 style="text-align:center; color:#2c5282;">Your Score: {{ score }} / {{ questions|length }}</h3>
-  {% else %}
-    <button type="submit" class="submit-btn">Submit Exam</button>
-  {% endif %}
-</form>
+    {% if results %}
+      <h3 style="text-align:center;">
+        Your Score: {{ score }} / {{ questions|length }}
+      </h3>
+    {% else %}
+      <button type="submit" class="submit-btn">Submit Exam</button>
+    {% endif %}
+  </form>
 
 </div>
 
 </body>
-
 </html>
