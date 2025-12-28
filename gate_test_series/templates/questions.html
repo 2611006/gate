@@ -99,27 +99,28 @@
                  {% if results %}disabled{% endif %}>
 
           <label for="q{{ q_idx }}_{{ loop.index }}"
-                 class="option-label"
-                 style="
-                 {% if results and user_choice %}
-                   {% if opt == correct_choice %}
-                     background-color:#d4edda; border-color:#28a745; color:#155724;
-                   {% elif opt == user_choice %}
-                     background-color:#f8d7da; border-color:#dc3545; color:#721c24;
-                   {% endif %}
-                 {% endif %}
-                 ">
+       class="option-label"
+       style="
+       {% if results %}
 
-            {{ opt }}
+         {# CASE 1: Question was attempted #}
+         {% if user_choice %}
+           {% if opt == correct_choice %}
+             background-color:#d4edda; border-color:#28a745; color:#155724;
+           {% elif opt == user_choice %}
+             background-color:#f8d7da; border-color:#dc3545; color:#721c24;
+           {% endif %}
 
-            {% if results and user_choice %}
-              {% if opt == correct_choice %}
-                <span style="float:right;font-size:0.8rem;">✔ Correct</span>
-              {% elif opt == user_choice %}
-                <span style="float:right;font-size:0.8rem;">✖ Your Choice</span>
-              {% endif %}
-            {% endif %}
-          </label>
+         {# CASE 2: Question was NOT attempted #}
+         {% else %}
+           {% if opt == correct_choice %}
+             background-color:#fff3cd; border-color:#ff9800; color:#856404;
+           {% endif %}
+         {% endif %}
+
+       {% endif %}
+       ">
+
 
         {% endfor %}
       </div>
@@ -138,3 +139,4 @@
 
 </body>
 </html>
+
