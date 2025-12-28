@@ -47,13 +47,15 @@ def quiz(stream, subject, difficulty):
         return "Difficulty not found", 404
 
     return render_template(
-        "questions.html",
-        stream=stream,
-        subject=SUBJECT_NAMES[subject],
-        difficulty=difficulty,
-        questions=module.questions[difficulty],
-        results=None
-    )
+    "questions.html",
+    stream=stream,
+    subject_slug=subject,                      # engineering_math
+    subject_name=SUBJECT_NAMES[subject],       # Engineering Mathematics
+    difficulty=difficulty,
+    questions=module.questions[difficulty],
+    results=None
+)
+
 
 # Dictionary mapping for cleaner lookup
 SUBJECT_MODULES = {
@@ -130,5 +132,6 @@ def index():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
