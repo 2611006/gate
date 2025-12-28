@@ -2,101 +2,45 @@
 <html>
 <head>
     <title>{{ subject_name }} - {{ level }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: sans-serif;
-            padding: 20px;
-            color: #2d3748;
+        body { background-color: #f8f9fa; font-family: sans-serif; padding: 20px; color: #2d3748; }
+        .container { max-width: 800px; margin: auto; }
+        
+        .card { 
+            background: white; border-radius: 12px; padding: 25px; 
+            margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+            border: 1px solid #e0e0e0; 
         }
-        .container {
-            max-width: 800px;
-            margin: auto;
+
+        /* FORCED ORANGE STYLE FOR UNATTEMPTED */
+        .unattempted-card {
+            border: 2px solid #ed8936 !important;
+            background-color: #fffaf0 !important;
         }
-        h2 {
-            text-align: center;
-            margin-bottom: 30px;
+
+        .options-list { list-style: none; padding: 0; margin-top: 15px; }
+        .radio-input { display: none; }
+        
+        .option-label { 
+            display: block; padding: 15px; margin-bottom: 10px; 
+            border: 2px solid #edeff2; border-radius: 10px; 
+            cursor: pointer; font-weight: 500; color: #4a5568; 
+            position: relative; transition: all 0.2s ease;
         }
-        /* The Card Structure */
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border: 1px solid #e0e0e0;
-            transition: border 0.3s ease;
+
+        .radio-input:checked + .option-label { 
+            background-color: #ebf8ff; border-color: #3182ce; color: #2c5282; 
         }
-        /* Style for Unattempted Card */
-        .card-unattempted {
-            border: 2px solid #ed8936;
-            background-color: #fffaf0;
+
+        .submit-btn { 
+            background-color: #3182ce; color: white; padding: 15px; 
+            border: none; border-radius: 8px; font-size: 1.1rem; 
+            cursor: pointer; width: 100%; font-weight: bold;
         }
-        .options-list {
-            list-style: none;
-            padding: 0;
-            margin-top: 15px;
-        }
-        /* Hide the actual radio circle */
-        .radio-input {
-            display: none;
-        }
-        /* Style for the Label (The "Button") */
-        .option-label {
-            display: block;
-            padding: 15px;
-            margin-bottom: 10px;
-            border: 2px solid #edeff2;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 500;
-            color: #4a5568;
-            position: relative;
-        }
-        .option-label:hover {
-            background-color: #f7fafc;
-            border-color: #cbd5e0;
-        }
-        /* WHAT HAPPENS WHEN CHOSEN (Pre-submission) */
-        .radio-input:checked + .option-label {
-            background-color: #ebf8ff;
-            border-color: #3182ce;
-            color: #2c5282;
-            box-shadow: 0 0 0 1px #3182ce;
-        }
-        .radio-input:checked + .option-label::after {
-            content: '✓';
-            position: absolute;
-            right: 15px;
-            font-weight: bold;
-        }
-        .submit-btn {
-            background-color: #3182ce;
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            font-weight: bold;
-            display: block;
-            width: 100%;
-            margin-top: 20px;
-        }
-        .submit-btn:hover {
-            background-color: #2b6cb0;
-        }
-        .unattempted-badge {
-            background-color: #ed8936;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            vertical-align: middle;
-            margin-left: 10px;
-            text-transform: uppercase;
+
+        .badge-orange {
+            background-color: #ed8936; color: white; padding: 3px 8px;
+            border-radius: 4px; font-size: 0.8rem; margin-left: 10px;
         }
     </style>
 </head>
@@ -111,45 +55,46 @@
             {% for q in questions %}
                 {% set q_idx = loop.index %}
                 
-                {# Define Logic for Results State #}
+                {# Determine if this specific question was skipped #}
+                {% set is_skipped = false %}
                 {% if results %}
-                    {% set user_choice = results[q_idx-1].user_choice %}
-                    {% set correct_choice = results[q_idx-1].correct_choice %}
-                    {% set is_unattempted = not user_choice %}
-                {% else %}
-                    {% set user_choice = None %}
-                    {% set is_unattempted = false %}
+                    {# Check if user_choice is None, empty, or doesn't exist #}
+                    {% if not results[q_idx-1].user_choice or results[q_idx-1].user_choice == "" %}
+                        {% set is_skipped = true %}
+                    {% endif %}
                 {% endif %}
 
-                <div class="card {% if is_unattempted %}card-unattempted{% endif %}">
+                <div class="card {{ 'unattempted-card' if is_skipped else '' }}">
                     <p style="font-size: 1.1rem;">
                         <b>{{ q_idx }}. {{ q.q }}</b>
-                        {% if is_unattempted %}
-                            <span class="unattempted-badge">Unattempted</span>
+                        {% if is_skipped %}
+                            <span class="badge-orange">Skipped / Unattempted</span>
                         {% endif %}
                     </p>
 
                     <div class="options-list">
                         {% for opt in q.options %}
+                            {% if results %}
+                                {% set user_choice = results[q_idx-1].user_choice %}
+                                {% set correct_choice = results[q_idx-1].correct_choice %}
+                            {% else %}
+                                {% set user_choice = None %}
+                                {% set correct_choice = None %}
+                            {% endif %}
+
                             <div class="option-wrapper">
-                                <input type="radio" 
-                                       name="q{{ q_idx }}" 
-                                       id="q{{ q_idx }}_{{ loop.index0 }}" 
-                                       value="{{ opt }}" 
-                                       class="radio-input" 
+                                <input type="radio" name="q{{ q_idx }}" id="q{{ q_idx }}_{{ loop.index0 }}" 
+                                       value="{{ opt }}" class="radio-input" 
                                        {% if user_choice == opt %}checked{% endif %} 
                                        {% if results %}disabled{% endif %}>
                                 
                                 <label for="q{{ q_idx }}_{{ loop.index0 }}" class="option-label" style="
                                     {% if results %}
-                                        {# 1. Always highlight the correct answer in green #}
                                         {% if opt == correct_choice %}
                                             background-color: #d4edda; border-color: #28a745; color:#155724;
-                                        {# 2. If the user picked this option and it was wrong, highlight in red #}
-                                        {% elif user_choice == opt and opt != correct_choice %}
+                                        {% elif user_choice == opt %}
                                             background-color: #f8d7da; border-color: #dc3545; color:#721c24;
-                                        {# 3. If unattempted, give options a subtle orange tint #}
-                                        {% elif is_unattempted %}
+                                        {% elif is_skipped %}
                                             border-color: #fbd38d;
                                         {% endif %}
                                     {% endif %}">
@@ -158,9 +103,9 @@
 
                                     {% if results %}
                                         {% if opt == correct_choice %}
-                                            <span style="float: right; font-size: 0.8rem;">✔ Correct Answer</span>
-                                        {% elif user_choice == opt and opt != correct_choice %}
-                                            <span style="float: right; font-size: 0.8rem;">✖ Your Choice</span>
+                                            <span style="float: right;">✔ Correct</span>
+                                        {% elif user_choice == opt %}
+                                            <span style="float: right;">✖ Your Choice</span>
                                         {% endif %}
                                     {% endif %}
                                 </label>
@@ -171,9 +116,9 @@
             {% endfor %}
 
             {% if results %}
-                <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e0e0e0; text-align: center;">
-                    <h3 style="color:#2c5282; margin: 0;">Your Score: {{ score }} / {{ questions|length }}</h3>
-                    <p><a href="{{ url_for('index') }}" style="color: #3182ce; text-decoration: none; font-weight: bold;">← Try Another Subject</a></p>
+                <div class="card" style="text-align: center;">
+                    <h3>Final Score: {{ score }} / {{ questions|length }}</h3>
+                    <a href="{{ url_for('index') }}" style="color: #3182ce; text-decoration: none;">Try Another Quiz</a>
                 </div>
             {% else %}
                 <button type="submit" class="submit-btn">Submit Exam</button>
