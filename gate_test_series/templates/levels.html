@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Select Level</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container levels">
+  <h2>{{ subject }} – Select Difficulty</h2>
+
+  <a class="easy" href="/quiz/{{ stream }}/{{ subject }}/easy">Easy</a>
+  <a class="medium" href="/quiz/{{ stream }}/{{ subject }}/medium">Medium</a>
+  <a class="hard" href="/quiz/{{ stream }}/{{ subject }}/hard">Hard</a>
+</div>
+
+</body>
+</html>

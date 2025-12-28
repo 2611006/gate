@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ stream }} Subjects</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container">
+  <h2>{{ stream }} – Select Subject</h2>
+
+  <div class="card-grid">
+  {% for subject in subjects %}
+    <div class="card">
+      <a href="/levels/{{ stream }}/{{ subject }}">
+        {{ subject }}
+      </a>
+    </div>
+  {% endfor %}
+</div>
+
+</div>
+
+</body>
+</html>
