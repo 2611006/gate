@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>{{ subject }} - {{ level }}</title>
+  <title>{{ subject_name }} - {{ level }}</title>
+  <h2>{{ subject_name }} Prep 
+  <small style="color: #718096;">({{ level }})</small>
+</h2>
+
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
     body { background-color: #f8f9fa; font-family: sans-serif; padding: 20px; }
@@ -82,7 +86,8 @@
 
   <form method="POST" action="{{ url_for('submit_answers') }}">
   <input type="hidden" name="difficulty" value="{{ difficulty }}">
-<input type="hidden" name="subject" value="{{ subject }}"> ```
+<input type="hidden" name="subject" value="{{ subject_slug }}">
+
 
   {% for q in questions %}
     {% set q_idx = loop.index %}
@@ -148,4 +153,5 @@
 </div>
 
 </body>
+
 </html>
