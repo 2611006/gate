@@ -49,13 +49,13 @@ def quiz(stream, subject, difficulty):
     return render_template(
     "questions.html",
     stream=stream,
-    subject_slug=subject,                      # engineering_math
-    subject_name=SUBJECT_NAMES[subject],       # Engineering Mathematics
+    subject_slug=subject,                    # engineering_math
+    subject_name=SUBJECT_NAMES[subject],     # Engineering Mathematics
+    level=difficulty.capitalize(),
     difficulty=difficulty,
-    questions=module.questions[difficulty],
+    questions=questions,
     results=None
 )
-
 
 # Dictionary mapping for cleaner lookup
 SUBJECT_MODULES = {
@@ -132,6 +132,7 @@ def index():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
 
