@@ -38,38 +38,48 @@ def levels(stream, subject):
 # Quiz page
 @app.route('/quiz/<stream>/<subject>/<difficulty>')
 def quiz(stream, subject, difficulty):
-    # Use the map to find the module
     module = SUBJECT_MODULES.get(subject)
     
-    # If subject isn't in the map, return 404 instead of None
     if not module:
-        return f"Subject '{subject}' not found.", 404
+        return "Subject not found", 404
 
     if difficulty not in module.questions:
-        return f"Difficulty '{difficulty}' not found for {subject}.", 404
+        return "Difficulty not found", 404
 
-    questions = module.questions[difficulty]
     return render_template(
-        'questions.html',
+        "questions.html",
         stream=stream,
-        subject=subject,
-        level=difficulty.capitalize(),
+        subject=SUBJECT_NAMES[subject],
         difficulty=difficulty,
-        questions=questions,
+        questions=module.questions[difficulty],
         results=None
     )
+
 # Dictionary mapping for cleaner lookup
 SUBJECT_MODULES = {
-    "Engineering Mathematics": engineering_math,
-    "Data Structures": ds,
-    "Statistics": statistics,
-    "Linear Algebra": linear_algebra,
-    "Probability": probability,
-    "Machine Learning Basics": ml,
-    "DBMS": dbms,
-    "Computer Networks": computer_networks,
-    "Operating Systems": operating_systems # ADDED
+    "engineering_math": engineering_math,
+    "data_structures": ds,
+    "statistics": statistics,
+    "linear_algebra": linear_algebra,
+    "probability": probability,
+    "ml": ml,
+    "dbms": dbms,
+    "computer_networks": computer_networks,
+    "operating_systems": operating_systems
 }
+
+SUBJECT_NAMES = {
+    "engineering_math": "Engineering Mathematics",
+    "data_structures": "Data Structures",
+    "ml": "Machine Learning Basics",
+    "dbms": "DBMS",
+    "computer_networks": "Computer Networks",
+    "operating_systems": "Operating Systems",
+    "statistics": "Statistics",
+    "linear_algebra": "Linear Algebra",
+    "probability": "Probability"
+}
+
 
 @app.route('/submit_answers', methods=['POST'])
 def submit_answers():
@@ -120,4 +130,5 @@ def index():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
