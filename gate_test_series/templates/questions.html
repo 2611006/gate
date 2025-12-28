@@ -118,7 +118,7 @@
             {% if results %}
                 <div class="card" style="text-align: center;">
                     <h3>Final Score: {{ score }} / {{ questions|length }}</h3>
-                    <a href="{{ url_for('streams') }}" style="color: #3182ce; text-decoration: none;">Try Another Quiz</a>
+                    <a href="{{ url_for('streams/subjects') }}" style="color: #3182ce; text-decoration: none;">Try Another Quiz</a>
                 </div>
             {% else %}
                 <button type="submit" class="submit-btn">Submit Exam</button>
@@ -127,4 +127,5 @@
     </div>
 </body>
 </html>
+
 
