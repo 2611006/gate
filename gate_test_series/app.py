@@ -21,9 +21,10 @@ def streams():
 @app.route('/subjects/<stream>')
 def subjects(stream):
     subjects_by_stream = {
-        "CSE": ["Engineering Mathematics", "Data Structures", "DBMS", "Operating Systems", "Computer Networks"],
-        "DA": ["Engineering Mathematics", "Statistics", "Linear Algebra", "Probability", "Machine Learning Basics"]
-    }
+    "CSE": ["engineering_math", "data_structures", "dbms", "operating_systems", "computer_networks"],
+    "DA": ["engineering_math", "statistics", "linear_algebra", "probability", "ml"]
+}
+
     if stream not in subjects_by_stream:
         return "Stream not found", 404
     subjects = subjects_by_stream[stream]
@@ -119,3 +120,4 @@ def index():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
