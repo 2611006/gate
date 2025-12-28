@@ -18,7 +18,6 @@
     }
 
     .options-list { list-style: none; padding: 0; margin-top: 15px; }
-
     .radio-input { display: none; }
 
     .option-label {
@@ -27,22 +26,8 @@
       margin-bottom: 10px;
       border: 2px solid #edeff2;
       border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s ease;
       font-weight: 500;
       color: #4a5568;
-      position: relative;
-    }
-
-    .option-label:hover {
-      background-color: #f7fafc;
-      border-color: #cbd5e0;
-    }
-
-    .radio-input:checked + .option-label {
-      background-color: #ebf8ff;
-      border-color: #3182ce;
-      color: #2c5282;
     }
 
     .submit-btn {
@@ -54,11 +39,8 @@
       font-size: 1rem;
       cursor: pointer;
       font-weight: bold;
-      display: block;
       width: 100%;
     }
-
-    .submit-btn:hover { background-color: #2b6cb0; }
   </style>
 </head>
 
@@ -77,18 +59,13 @@
 
     {% for q in questions %}
       {% set q_idx = loop.index %}
+      {% set user_choice = results[q_idx-1].user_choice if results else None %}
+      {% set correct_choice = results[q_idx-1].correct_choice if results else None %}
 
       <div class="card">
         <p><b>{{ q_idx }}. {{ q.q }}</b></p>
 
         {% for opt in q.options %}
-          {% if results %}
-            {% set user_choice = results[q_idx-1].user_choice %}
-            {% set correct_choice = results[q_idx-1].correct_choice %}
-          {% else %}
-            {% set user_choice = None %}
-            {% set correct_choice = None %}
-          {% endif %}
 
           <input type="radio"
                  name="q{{ q_idx }}"
@@ -99,28 +76,37 @@
                  {% if results %}disabled{% endif %}>
 
           <label for="q{{ q_idx }}_{{ loop.index }}"
-       class="option-label"
-       style="
-       {% if results %}
+            class="option-label"
+            style="
+              {% if results %}
 
-         {# CASE 1: Question was attempted #}
-         {% if user_choice %}
-           {% if opt == correct_choice %}
-             background-color:#d4edda; border-color:#28a745; color:#155724;
-           {% elif opt == user_choice %}
-             background-color:#f8d7da; border-color:#dc3545; color:#721c24;
-           {% endif %}
+                {# ATTEMPTED QUESTIONS #}
+                {% if user_choice %}
+                  {% if opt == correct_choice %}
+                    background:#d4edda; border-color:#28a745; color:#155724;
+                  {% elif opt == user_choice %}
+                    background:#f8d7da; border-color:#dc3545; color:#721c24;
+                  {% endif %}
 
-         {# CASE 2: Question was NOT attempted #}
-         {% else %}
-           {% if opt == correct_choice %}
-             background-color:#fff3cd; border-color:#ff9800; color:#856404;
-           {% endif %}
-         {% endif %}
+                {# UNATTEMPTED QUESTIONS #}
+                {% else %}
+                  {% if opt == correct_choice %}
+                    background:#fff3cd; border-color:#ff9800; color:#856404;
+                  {% endif %}
+                {% endif %}
 
-       {% endif %}
-       ">
+              {% endif %}
+            ">
+            {{ opt }}
 
+            {% if results %}
+              {% if opt == correct_choice %}
+                <span style="float:right;">✔</span>
+              {% elif opt == user_choice %}
+                <span style="float:right;">✖</span>
+              {% endif %}
+            {% endif %}
+          </label>
 
         {% endfor %}
       </div>
@@ -139,4 +125,3 @@
 
 </body>
 </html>
-
