@@ -35,14 +35,14 @@
 <script>
   const btn = document.getElementById("startBtn");
 
-  /* Mouse-follow glow */
+  // Mouse-follow glow
   btn.addEventListener("mousemove", (e) => {
     const rect = btn.getBoundingClientRect();
     btn.style.setProperty("--x", `${e.clientX - rect.left}px`);
     btn.style.setProperty("--y", `${e.clientY - rect.top}px`);
   });
 
-  /* Ripple click effect */
+  // Ripple click effect
   btn.addEventListener("click", (e) => {
     const ripple = document.createElement("span");
     ripple.className = "ripple";
@@ -59,6 +59,7 @@
 
 </body>
 </html>
+
 
 
 
