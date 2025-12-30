@@ -17,22 +17,44 @@
   <br>
   <div class="start-practice-wrapper animate-in">
   <div class="start-badge">Start Here</div>
-
   <button class="start-practice-btn" id="startBtn">
     Start Practice →
-    <span class="ripple"></span>
   </button>
-</div>
-
+  </div>
   <img
        src="{{ url_for('static',filename='images/boy.jpg.png') }}"
        alt="Home Page"
        style="width:100%; max-height:350px; object-fit:cover;"
   >
 </div>
+<script>
+  const btn = document.getElementById("startBtn");
+
+  /* Mouse-follow glow */
+  btn.addEventListener("mousemove", (e) => {
+    const rect = btn.getBoundingClientRect();
+    btn.style.setProperty("--x", `${e.clientX - rect.left}px`);
+    btn.style.setProperty("--y", `${e.clientY - rect.top}px`);
+  });
+
+  /* Ripple click effect */
+  btn.addEventListener("click", (e) => {
+    const ripple = document.createElement("span");
+    ripple.className = "ripple";
+
+    const rect = btn.getBoundingClientRect();
+    ripple.style.left = `${e.clientX - rect.left}px`;
+    ripple.style.top = `${e.clientY - rect.top}px`;
+
+    btn.appendChild(ripple);
+
+    setTimeout(() => ripple.remove(), 600);
+  });
+</script>
 
 </body>
 </html>
+
 
 
 
