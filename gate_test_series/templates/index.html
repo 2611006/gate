@@ -7,44 +7,36 @@
 <body>
 
 <div class="container">
+
   <h1>GATE Test Series</h1>
   <br>
-  <div>
+
+  <!-- Banner Image -->
   <img 
-        src="{{ url_for('static', filename='images/banner.jpg') }}" 
-        alt="Home Banner"
-        style="width:100%; max-height:350px; object-fit:cover;"
-    >
-  </div>
-  <br>
+    src="{{ url_for('static', filename='images/banner.jpg') }}" 
+    alt="Home Banner"
+    style="width:100%; max-height:350px; object-fit:cover;"
+  >
+
+  <br><br>
+
+  <!-- Button Card -->
   <div class="card-grid">
     <div class="card">
       <a href="/streams">Start Practice</a>
     </div>
   </div>
+
+  <br><br>
+
+  <!-- Bottom Image -->
+  <img
+    src="{{ url_for('static', filename='images/boy.jpg.png') }}"
+    alt="Home Page"
+    style="width:100%; max-height:350px; object-fit:cover;"
+  >
+
 </div>
 
-  </div>
-  <img
-       src="{{ url_for('static',filename='images/boy.jpg.png') }}"
-       alt="Home Page"
-       style="width:100%; max-height:350px; object-fit:cover;"
-  >
-</div>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
