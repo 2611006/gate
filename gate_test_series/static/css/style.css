@@ -538,7 +538,6 @@ h2 {
   transform: translateY(40px);
 }
 
-/* Entrance animation */
 .animate-in {
   animation: fadeSlideUp 1s ease forwards;
 }
@@ -587,7 +586,6 @@ h2 {
   transition: transform 0.2s ease;
 }
 
-/* Hover lift */
 .start-practice-btn:hover {
   transform: scale(1.05);
 }
@@ -627,4 +625,5 @@ h2 {
     opacity: 0;
   }
 }
+
 
